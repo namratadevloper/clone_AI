@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --background: #ffffff;
+            --text: #333333;
+            --border: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: transparent;
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text);
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .menu-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .auth-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .auth-button:hover {
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 1rem 3.5rem 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            outline: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .search-button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            opacity: 0.9;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .results-container {
+            margin-top: 2rem;
+            padding: 1rem;
+            text-align: left;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .results-container.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            line-height: 1.6;
+        }
+
+        .result-item p {
+            margin: 0;
+            color: var(--text);
+        }
+
+        /* New styles for formatted output */
+        .result-item h1, .result-item h2, .result-item h3, 
+        .result-item h4, .result-item h5, .result-item h6 {
+            color: var(--primary);
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+
+        .result-item h1 { font-size: 1.8em; }
+        .result-item h2 { font-size: 1.5em; }
+        .result-item h3 { font-size: 1.3em; }
+
+        .result-item ul, .result-item ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .result-item li {
+            margin: 0.5rem 0;
+        }
+
+        .result-item table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+        }
+
+        .result-item td {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-item tr:last-child td {
+            border-bottom: none;
+        }
+
+        .result-item tr:nth-child(even) {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .result-item code {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .result-item pre {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .result-item blockquote {
+            border-left: 4px solid var(--primary);
+            margin: 1rem 0;
+            padding: 0.5rem 0 0.5rem 1rem;
+            background: rgba(26, 115, 232, 0.05);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .result-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .result-item hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 1.5rem 0;
+        }
+
+        .loading {
+            display: none;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .container {
+                margin: 2rem auto;
+            }
+
+            .search-bar {
+                font-size: 1rem;
+                padding: 0.8rem 3rem 0.8rem 1.2rem;
+            }
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background: #202123;
+            color: white;
+            transition: left 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .new-chat-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .new-chat-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-history {
+            padding: 1rem;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.8);
+            transition: background-color 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .history-item i {
+            font-size: 1rem;
+            width: 20px;
+        }
+
+        .history-date {
+            font-size: 0.8rem;
+            color: #666;
+            margin: 1rem 0.8rem;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Add sidebar -->
+    <div class="overlay" id="overlay"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <button class="new-chat-button" id="newChatButton">
+                <i class="fas fa-plus"></i>
+                New chat
+            </button>
+        </div>
+        <div class="chat-history" id="chatHistory">
+            <!-- Chat history will be populated here -->
+        </div>
+    </div>
+
+    <nav class="top-nav">
+        <button class="menu-button">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="auth-buttons">
+            <button class="auth-button login">
+                <i class="fas fa-sign-in-alt"></i>
+                Login
+            </button>
+            <button class="auth-button signup">
+                <i class="fas fa-user-plus"></i>
+                Signup
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Welcome to Our Platform</h1>
+        <p class="subtitle">Explore the future of learning with our innovative features.</p>
+
+        <div class="search-container">
+            <input type="text" class="search-bar" id="searchInput" placeholder="Ask anything...">
+            <button class="search-button" id="searchButton">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <div class="loading" id="loadingIndicator">
+            <div class="loading-spinner"></div>
+        </div>
+
+        <div class="results-container" id="resultsContainer">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const menuButton = document.querySelector('.menu-button');
+            const newChatButton = document.getElementById('newChatButton');
+            const chatHistory = document.getElementById('chatHistory');
+
+            // Chat history management
+            let conversations = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+
+            function addToHistory(query, response) {
+                const timestamp = new Date().toISOString();
+                conversations.unshift({
+                    id: Date.now(),
+                    query,
+                    response,
+                    timestamp
+                });
+                localStorage.setItem('chatHistory', JSON.stringify(conversations));
+                updateHistoryUI();
+            }
+
+            function updateHistoryUI() {
+                const groupedHistory = groupHistoryByDate(conversations);
+                chatHistory.innerHTML = '';
+
+                for (const [date, items] of Object.entries(groupedHistory)) {
+                    const dateHeader = document.createElement('div');
+                    dateHeader.className = 'history-date';
+                    dateHeader.textContent = formatDate(date);
+                    chatHistory.appendChild(dateHeader);
+
+                    items.forEach(item => {
+                        const historyItem = document.createElement('div');
+                        historyItem.className = 'history-item';
+                        historyItem.innerHTML = `
+                            <i class="fas fa-message"></i>
+                            <span>${item.query.substring(0, 30)}${item.query.length > 30 ? '...' : ''}</span>
+                        `;
+                        historyItem.addEventListener('click', () => loadConversation(item));
+                        chatHistory.appendChild(historyItem);
+                    });
+                }
+            }
+
+            function groupHistoryByDate(history) {
+                const groups = {};
+                history.forEach(item => {
+                    const date = new Date(item.timestamp).toLocaleDateString();
+                    if (!groups[date]) groups[date] = [];
+                    groups[date].push(item);
+                });
+                return groups;
+            }
+
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+
+                if (date.toDateString() === today.toDateString()) return 'Today';
+                if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+                return date.toLocaleDateString();
+            }
+
+            function loadConversation(conversation) {
+                searchInput.value = conversation.query;
+                resultsContainer.innerHTML = `
+                    <div class="result-item">
+                        ${formatResponse(conversation.response)}
+                    </div>
+                `;
+                resultsContainer.classList.add('active');
+                closeSidebar();
+            }
+
+            function startNewChat() {
+                searchInput.value = '';
+                resultsContainer.innerHTML = '';
+                resultsContainer.classList.remove('active');
+                searchInput.focus();
+                closeSidebar();
+            }
+
+            async function performSearch() {
+                const query = searchInput.value.trim();
+                
+                if (!query) {
+                    alert('Please enter a search query!');
+                    return;
+                }
+
+                loadingIndicator.classList.add('active');
+                resultsContainer.classList.remove('active');
+
+                try {
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: query })
+                    });
+
+                    const data = await response.json();
+                    
+                    loadingIndicator.classList.remove('active');
+                    
+                    const formattedResponse = formatResponse(data.reply || 'No results found.');
+                    
+                    resultsContainer.innerHTML = `
+                        <div class="result-item">
+                            ${formattedResponse}
+                        </div>
+                    `;
+                    resultsContainer.classList.add('active');
+
+                    // Add to history and clear search input
+                    addToHistory(query, data.reply || 'No results found.');
+                    searchInput.value = '';
+                    
+                } catch (error) {
+                    loadingIndicator.classList.remove('active');
+                    resultsContainer.innerHTML = `
+                        <div class="result-item">
+                            <p>Sorry, I encountered an error. Please try again.</p>
+                        </div>
+                    `;
+                    resultsContainer.classList.add('active');
+                }
+            }
+
+            // Sidebar toggle functions
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            }
+
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+
+            // Event listeners
+            menuButton.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', closeSidebar);
+            newChatButton.addEventListener('click', startNewChat);
+            searchButton.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            // Initialize history UI
+            updateHistoryUI();
+        });
+
+        function formatResponse(text) {
+            // Check if the text contains a table
+            if (text.includes('|')) {
+                text = formatTables(text);
+            }
+
+            // Format headings
+            text = text.replace(/#{1,6} (.+)/g, (match, content) => {
+                const level = match.split(' ')[0].length;
+                return `<h${level}>${content}</h${level}>`;
+            });
+
+            // Format bold text
+            text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            // Format italic text
+            text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+            // Format lists
+            text = text.replace(/^\s*[-*+]\s+(.+)/gm, '<li>$1</li>');
+            text = text.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+
+            // Format code blocks
+            text = text.replace(/```(\w+)?\n([\s\S]+?)\n```/g, '<pre><code>$2</code></pre>');
+            
+            // Format inline code
+            text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Format blockquotes
+            text = text.replace(/^>\s(.+)/gm, '<blockquote>$1</blockquote>');
+
+            // Convert line breaks
+            text = text.replace(/\n\n/g, '<br><br>');
+
+            return text;
+        }
+
+        function formatTables(text) {
+            const lines = text.split('\n');
+            let inTable = false;
+            let tableHTML = '';
+            let result = '';
+
+            for (const line of lines) {
+                if (line.includes('|')) {
+                    if (!inTable) {
+                        inTable = true;
+                        tableHTML = '<table>';
+                    }
+
+                    // Process table row
+                    const cells = line.split('|').filter(cell => cell.trim());
+                    if (line.includes('---')) {
+                        continue; // Skip separator line
+                    }
+
+                    const isHeader = !inTable || tableHTML === '<table>';
+                    const cellType = isHeader ? 'th' : 'td';
+                    
+                    tableHTML += '<tr>';
+                    cells.forEach(cell => {
+                        tableHTML += `<${cellType}>${cell.trim()}</${cellType}>`;
+                    });
+                    tableHTML += '</tr>';
+
+                } else if (inTable) {
+                    inTable = false;
+                    tableHTML += '</table>';
+                    result += tableHTML;
+                    result += line + '\n';
+                } else {
+                    result += line + '\n';
+                }
+            }
+
+            if (inTable) {
+                tableHTML += '</table>';
+                result += tableHTML;
+            }
+
+            return result;
+        }
+    </script>
+</body>
+</html>
