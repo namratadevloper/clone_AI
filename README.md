@@ -1,84 +1,74 @@
-# AI Chat Application
+# Cloan AI
 
-This is a Flask-based web application that uses the Gemini AI API to create an interactive chat interface.
+A simple web-based AI chatbot using Flask and Google's Gemini AI API.
 
-## Prerequisites
+## Features
 
-- Python 3.7 or higher
-- pip (Python package installer)
-- A Gemini API key (Get it from Google AI Studio)
+- Modern chat UI with markdown support
+- Real-time chat powered by Gemini AI
+- Responsive design
+- Easy to run locally
 
-## Installation Steps
+## Getting Started
 
-1. Clone this repository or download the files to your local machine.
+### 1. Clone the repository
 
-2. Create a virtual environment (recommended):
 ```bash
-# Windows
-python -m venv venv
-venv\Scripts\activate
-
-# Linux/Mac
-python3 -m venv venv
-source venv/bin/activate
+git clone <your-repo-url>
+cd "clone AI"
 ```
 
-3. Install the required packages:
+### 2. Install dependencies
+
+Make sure you have Python 3.x installed.
+
 ```bash
-pip install flask requests
+pip install -r requirements.txt
 ```
 
-4. Get your Gemini API key:
-   - Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
-   - Create an account if you don't have one
-   - Generate an API key
-   - Replace the `GEMINI_API_KEY` in `app.py` with your actual API key
+### 3. Set up your Gemini API key
 
-## Project Structure
+Edit `app.py` and replace the value of `GEMINI_API_KEY` with your own Gemini API key:
 
-```
-├── app.py              # Main Flask application
-├── static/            # Static files (CSS, JavaScript)
-├── templates/         # HTML templates
-└── requirements.txt   # Project dependencies
+```python
+GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
 ```
 
-## Running the Application
+### 4. Run the app
 
-1. Make sure your virtual environment is activated.
-
-2. Run the Flask application:
 ```bash
 python app.py
 ```
 
-3. Open your web browser and navigate to:
+The app will be available at [http://127.0.0.1:5000](http://127.0.0.1:5000).
+
+## Project Structure
+
 ```
-http://localhost:5000
+clone AI/
+│
+├── app.py                # Flask backend
+├── requirements.txt      # Python dependencies
+│
+├── templates/
+│   └── index.html        # Main HTML template
+│
+└── static/
+    ├── style.css         # Custom styles
+    └── script.js         # Frontend chat logic
 ```
 
-## Features
+## Usage
 
-- Interactive chat interface
-- Real-time communication with Gemini AI
-- Error handling and response validation
-- Debug mode enabled for development
+- Open your browser and go to [http://127.0.0.1:5000](http://127.0.0.1:5000)
+- Type your message and press Enter or click the send button
+- The bot will reply using Gemini AI
 
-## Troubleshooting
+## Notes
 
-If you encounter any issues:
+- Make sure your API key is valid and has access to the Gemini API.
+- This project is for educational/demo purposes. Do not expose your API key in production.
 
-1. Make sure all dependencies are installed correctly
-2. Verify your Gemini API key is valid and properly set in `app.py`
-3. Check the console output for any error messages
-4. Ensure you have an active internet connection
+## License
 
-## Security Notes
-
-- Never commit your API key to version control
-- Consider using environment variables for sensitive information
-- Keep your dependencies updated for security patches
-
-## Support
-
-For any issues or questions, please create an issue in the repository or contact the maintainers. 
+MIT License 
